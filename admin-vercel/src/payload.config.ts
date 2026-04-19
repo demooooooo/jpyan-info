@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import { zh } from '@payloadcms/translations/languages/zh'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { sqliteD1Adapter } from '@payloadcms/db-d1-sqlite'
 import { buildConfig } from 'payload'
@@ -70,6 +71,12 @@ export default buildConfig({
   collections: [Users, Media, Brands, Products, ProductEntries],
   graphQL: {
     disable: true,
+  },
+  i18n: {
+    fallbackLanguage: 'zh',
+    supportedLanguages: {
+      zh,
+    },
   },
   secret: process.env.PAYLOAD_SECRET || '',
   telemetry: false,
