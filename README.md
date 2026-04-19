@@ -1,48 +1,18 @@
-# Payload-CMS
+# jpyan-info
 
-## 本地运行
+这个仓库现在按前后台分成两个独立目录管理：
 
-```bash
-npm install
-npm run generate:types
-npm run generate:importmap
-npm run import:yyanhub
-npm run dev
-```
+- `frontend-cloudflare`
+  - 给 Cloudflare 用的前台站点模板
+  - 当前内容来自之前确认过的 `site` 静态镜像
+- `admin-vercel`
+  - 给 Vercel 用的 Payload 后台
+  - 负责商品、品牌、首页展示等内容管理
 
-打开：
+推荐部署方式：
 
-- 前台：`http://127.0.0.1:3000`
-- 后台：`http://127.0.0.1:3000/admin`
+1. `frontend-cloudflare` 部署到 Cloudflare Pages
+2. `admin-vercel` 部署到 Vercel
+3. 前台后面再按需要对接后台接口或内容源
 
-首次进入后台时，按页面提示创建管理员账号即可。
-
-## 当前阶段已完成
-
-- 已建立独立 Payload 项目
-- 已导入品牌、商品和一部分商品关联内容
-- 商品支持 `Show on home page`
-- 首页、品牌页、商品详情页、Community、Feed 已接到 Payload 数据
-- 已把之前抓下来的网页模板放进 `template-source/ciggies`
-
-## 旧数据来源
-
-- MySQL：`yyanhub`
-- 本地图片目录：`E:/EasyLink/yyanhub/信息站-WP/yyanhub/image/upload`
-
-## 旧数据再次导入
-
-```bash
-npm run import:yyanhub
-```
-
-## Vercel / Neon
-
-项目在检测到 `DATABASE_URL` 或 `POSTGRES_URL` 后，会自动改走 Postgres。
-
-常用命令：
-
-```bash
-npm run migrate:postgres
-npm run build:vercel
-```
+当前重构目标是先把代码管理结构拆清楚，不再把前后台混在一个目录里。
