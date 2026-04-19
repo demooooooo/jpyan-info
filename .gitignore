@@ -1,0 +1,12 @@
+.next
+node_modules
+.env
+payload.db
+dist
+coverage
+public/imported-media
+check_*.png
+home-check*.png
+local-home*.png
+original-home*.png
+test.env

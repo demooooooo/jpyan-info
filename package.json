@@ -1,0 +1,44 @@
+{
+  "name": "payload-cms-yyanhub",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build",
+    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev --no-server-fast-refresh",
+    "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
+    "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
+    "import:yyanhub": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/import-yyanhub.ts",
+    "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
+    "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
+  },
+  "dependencies": {
+    "@payloadcms/db-sqlite": "3.83.0",
+    "@payloadcms/next": "3.83.0",
+    "@payloadcms/richtext-lexical": "3.83.0",
+    "@payloadcms/ui": "3.83.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "16.4.7",
+    "graphql": "^16.11.0",
+    "mysql2": "^3.15.2",
+    "next": "16.2.3",
+    "payload": "3.83.0",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "sharp": "0.34.2",
+    "slugify": "^1.6.6"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.9",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "eslint": "^9.26.0",
+    "eslint-config-next": "16.2.3",
+    "tsx": "4.21.0",
+    "typescript": "5.9.3"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  }
+}
