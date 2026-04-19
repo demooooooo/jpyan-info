@@ -7,16 +7,23 @@ import { getHomeGalleryPositions } from '@/lib/site-template'
 const positions = getHomeGalleryPositions()
 
 const toMoney = (value: unknown) => {
+  let parsed: number | null = null
+
   if (typeof value === 'number') {
-    return Number.isFinite(value) && value > 0 ? value : null
+    parsed = Number.isFinite(value) && value > 0 ? value : null
+  } else if (typeof value === 'string') {
+    const next = Number(value)
+    parsed = Number.isFinite(next) && next > 0 ? next : null
   }
 
-  if (typeof value === 'string') {
-    const parsed = Number(value)
-    return Number.isFinite(parsed) && parsed > 0 ? parsed : null
+  if (parsed == null) return null
+
+  // Legacy source mixes yuan values like 350 and cent-like values such as 4300.00.
+  if (parsed >= 1000) {
+    parsed = parsed / 100
   }
 
-  return null
+  return Number.isInteger(parsed) ? parsed : Number(parsed.toFixed(2))
 }
 
 const getProductPrice = (product: Record<string, unknown>) => {
