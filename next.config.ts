@@ -20,6 +20,22 @@ const nextConfig: NextConfig = {
   },
     serverExternalPackages: ['drizzle-kit', 'jose', 'pg-cloudflare'],
   webpack: (webpackConfig) => {
+    webpackConfig.resolve.alias = {
+      ...(webpackConfig.resolve.alias || {}),
+      '@payloadcms/translations/dist/importDateFNSLocale.js': path.resolve(
+        dirname,
+        'src/shims/payload/importDateFNSLocale.ts',
+      ),
+      '@payloadcms/ui/dist/elements/CodeEditor/CodeEditor.js': path.resolve(
+        dirname,
+        'src/shims/payload/CodeEditor.tsx',
+      ),
+      '@payloadcms/ui/dist/elements/DatePicker/DatePicker.js': path.resolve(
+        dirname,
+        'src/shims/payload/DatePicker.tsx',
+      ),
+    }
+
     webpackConfig.resolve.extensionAlias = {
       '.cjs': ['.cts', '.cjs'],
       '.js': ['.ts', '.tsx', '.js', '.jsx'],

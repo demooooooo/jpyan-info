@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 import { sqliteD1Adapter } from '@payloadcms/db-d1-sqlite'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import { getCloudflareContext, type CloudflareContext } from '@opennextjs/cloudflare'
@@ -51,13 +50,16 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    meta: {
+      defaultOGImageType: 'off',
+    },
   },
   collections: [Users, Media, Brands, Products, ProductEntries],
-  editor: lexicalEditor(),
   graphQL: {
     disable: true,
   },
   secret: process.env.PAYLOAD_SECRET || '',
+  telemetry: false,
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },

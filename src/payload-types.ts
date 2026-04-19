@@ -247,6 +247,9 @@ export interface ProductEntry {
   excerpt?: string | null;
   content?: string | null;
   authorName?: string | null;
+  /**
+   * 使用 ISO 时间字符串，先保留排序和显示，减轻后台日期组件体积。
+   */
   publishedAt?: string | null;
   isVisible?: boolean | null;
   legacyId?: number | null;

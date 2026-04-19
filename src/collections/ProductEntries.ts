@@ -57,8 +57,11 @@ export const ProductEntries: CollectionConfig = {
     },
     {
       name: 'publishedAt',
-      type: 'date',
+      type: 'text',
       defaultValue: () => new Date().toISOString(),
+      admin: {
+        description: '使用 ISO 时间字符串，先保留排序和显示，减轻后台日期组件体积。',
+      },
     },
     {
       name: 'isVisible',

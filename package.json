@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" opennextjs-cloudflare build",
-    "build:next": "npm run prepare:cloudflare && cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build",
+    "build:next": "npm run prepare:cloudflare && cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build --webpack",
     "deploy": "npm run deploy:database && npm run deploy:app",
     "deploy:app": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "deploy:database": "cross-env NODE_ENV=production PAYLOAD_SECRET=ignore PAYLOAD_USE_WRANGLER_PROXY=true payload migrate",
@@ -27,7 +27,6 @@
     "@payloadcms/db-d1-sqlite": "3.83.0",
     "@payloadcms/db-sqlite": "3.83.0",
     "@payloadcms/next": "3.83.0",
-    "@payloadcms/richtext-lexical": "3.83.0",
     "@payloadcms/ui": "3.83.0",
     "cross-env": "^7.0.3",
     "drizzle-kit-e722632bd56cd1a1": "npm:drizzle-kit@0.31.7",
