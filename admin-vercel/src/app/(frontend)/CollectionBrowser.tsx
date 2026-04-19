@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 import { getProductFormatTags, getProductPrice, toTemplateImageUrl } from '@/lib/frontend-data'
 
@@ -118,6 +118,8 @@ export function CollectionBrowser({ brands, labels, products }: CollectionBrowse
   const [sortKey, setSortKey] = useState('newest')
   const [openMenu, setOpenMenu] = useState<null | 'brand' | 'format' | 'price' | 'sort'>(null)
   const menuRef = useRef<HTMLDivElement | null>(null)
+  const inputRef = useRef<HTMLInputElement | null>(null)
+  const pendingScrollTopRef = useRef<number | null>(null)
 
   useEffect(() => {
     const onPointerDown = (event: MouseEvent) => {
@@ -166,6 +168,27 @@ export function CollectionBrowser({ brands, labels, products }: CollectionBrowse
     })
   }, [brandFilter, formatFilter, priceFilter, products, query, sortKey])
 
+  useLayoutEffect(() => {
+    const pendingTop = pendingScrollTopRef.current
+    if (pendingTop == null) return
+    if (document.activeElement !== inputRef.current) {
+      pendingScrollTopRef.current = null
+      return
+    }
+
+    window.scrollTo({
+      top: pendingTop,
+      left: window.scrollX,
+      behavior: 'auto',
+    })
+
+    const reset = window.requestAnimationFrame(() => {
+      pendingScrollTopRef.current = null
+    })
+
+    return () => window.cancelAnimationFrame(reset)
+  }, [filteredProducts.length, query])
+
   const currentBrandLabel = brandOptions.find((item) => item.value === brandFilter)?.label || labels.all
   const currentFormatLabel = formatOptions.find((item) => item.value === formatFilter)?.label || labels.format
   const currentPriceLabel = PRICE_OPTIONS.find((item) => item.value === priceFilter)?.label || labels.price
@@ -206,8 +229,12 @@ export function CollectionBrowser({ brands, labels, products }: CollectionBrowse
                   autoComplete="off"
                   className="w-full bg-ink-2 rounded-full pl-9 pr-3 py-[6px] text-ash placeholder:text-muted/40 focus:outline-none focus:bg-ink-3 transition-colors border border-black/[0.07] focus:border-black/[0.12]"
                   name="q"
-                  onChange={(event) => setDraftQuery(event.target.value)}
+                  onChange={(event) => {
+                    pendingScrollTopRef.current = window.scrollY
+                    setDraftQuery(event.target.value)
+                  }}
                   placeholder={labels.searchPlaceholder}
+                  ref={inputRef}
                   style={{ fontSize: '16px' }}
                   type="text"
                   value={draftQuery}
