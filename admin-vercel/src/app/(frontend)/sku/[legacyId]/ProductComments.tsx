@@ -241,13 +241,15 @@ export function ProductComments({ comments: initialComments, currentUser, produc
 
               {message ? <p className="text-[12px] text-muted/55 leading-relaxed">{message}</p> : null}
 
-              <button
-                className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-full text-[13px] font-medium transition-all bg-ink text-white hover:bg-ink/85 disabled:opacity-60 disabled:cursor-not-allowed"
-                disabled={isSubmitting}
-                type="submit"
-              >
-                {isSubmitting ? '提交中…' : '提交评论'}
-              </button>
+              <div className="pt-1">
+                <button
+                  className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-full text-[13px] font-semibold transition-all bg-gold text-ink border border-gold/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] hover:bg-[#e4bc66] disabled:opacity-60 disabled:cursor-not-allowed"
+                  disabled={isSubmitting}
+                  type="submit"
+                >
+                  {isSubmitting ? '提交中…' : '提交评论'}
+                </button>
+              </div>
             </form>
           </div>
         </div>
