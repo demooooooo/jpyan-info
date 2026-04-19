@@ -10,6 +10,7 @@
     "deploy:app": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "deploy:database": "cross-env NODE_ENV=production PAYLOAD_SECRET=ignore PAYLOAD_USE_WRANGLER_PROXY=true payload migrate",
     "dev": "npm run prepare:cloudflare && cross-env PAYLOAD_USE_WRANGLER_PROXY=true NODE_OPTIONS=--no-deprecation next dev --no-server-fast-refresh",
+    "generate:asset-manifest": "tsx scripts/generate-template-asset-manifest.ts",
     "generate:importmap": "cross-env PAYLOAD_USE_WRANGLER_PROXY=true NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "generate:template-data": "tsx scripts/generate-template-data.ts",
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
@@ -17,6 +18,7 @@
     "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
     "payload": "cross-env PAYLOAD_USE_WRANGLER_PROXY=true NODE_OPTIONS=--no-deprecation payload",
     "prepare:cloudflare": "npm run generate:template-data",
+    "prune:template-images": "tsx scripts/prune-template-images.ts",
     "preview:cloudflare": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
   },
