@@ -3,6 +3,7 @@ import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
 
 import { ProductComments } from './ProductComments'
+import { ProductGallery } from './ProductGallery'
 import { getCurrentFrontendUser } from '@/lib/auth-user'
 import { getProductCommentList } from '@/lib/comment-store'
 import { toTemplateImageUrl } from '@/lib/frontend-data'
@@ -17,13 +18,100 @@ type Props = {
   }>
 }
 
-const splitDescription = (html?: string | null) => {
-  if (!html) return { chinese: '', english: '' }
-  const plain = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
-  const chineseMatch = plain.match(/[\u4e00-\u9fff].*$/)
-  const chinese = chineseMatch?.[0] || ''
-  const english = chinese ? plain.replace(chinese, '').trim() : plain
-  return { chinese, english }
+const decodeHtml = (value: string) =>
+  value
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+
+const stripHtmlToText = (html?: string | null) => {
+  if (!html) return ''
+
+  return decodeHtml(html)
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/\r/g, '')
+    .replace(/[ \t]+\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
+}
+
+const normalizeSpecLabel = (value: string) =>
+  value
+    .replace(/\s+/g, '')
+    .replace(/：/g, '')
+    .trim()
+
+const buildDerivedSpecifications = (product: {
+  brief?: string | null
+  introHtml?: string | null
+  legacyParametersRaw?: string | null
+  specifications?: Array<{ label?: string | null; value?: string | null }> | null
+}) => {
+  const existing = (product.specifications || [])
+    .map((item) => ({
+      label: item.label?.trim() || '',
+      value: item.value?.trim() || '',
+    }))
+    .filter((item) => item.label && item.value)
+
+  if (existing.length) return existing
+
+  const specs: Array<{ label: string; value: string }> = []
+  const seen = new Set<string>()
+  const pushSpec = (label: string, value: string) => {
+    const normalizedLabel = normalizeSpecLabel(label)
+    const normalizedValue = value.replace(/\s+/g, ' ').trim()
+    if (!normalizedLabel || !normalizedValue) return
+
+    const key = `${normalizedLabel}::${normalizedValue}`
+    if (seen.has(key)) return
+    seen.add(key)
+    specs.push({ label: normalizedLabel, value: normalizedValue })
+  }
+
+  const rawSources = [stripHtmlToText(product.introHtml), product.brief || '', product.legacyParametersRaw || '']
+    .filter(Boolean)
+    .join('\n')
+
+  for (const line of rawSources.split(/\n+/).map((item) => item.trim()).filter(Boolean)) {
+    const cleaned = line.replace(/\s+/g, ' ').trim()
+    if (!cleaned) continue
+
+    if (cleaned.includes('|')) {
+      for (const segment of cleaned.split('|').map((item) => item.trim()).filter(Boolean)) {
+        const pair = segment.match(/^([^:：]+)[:：](.+)$/)
+        if (pair) pushSpec(pair[1], pair[2])
+      }
+      continue
+    }
+
+    const pair = cleaned.match(/^([^:：]+)[:：]\s*(.+)$/)
+    if (pair) {
+      pushSpec(pair[1], pair[2])
+    }
+  }
+
+  return specs
+}
+
+const splitDescription = (product: { brief?: string | null; introHtml?: string | null }) => {
+  const plain = stripHtmlToText(product.introHtml || product.brief)
+  if (!plain) return { chinese: '', english: '' }
+
+  const lines = plain.split(/\n+/).map((item) => item.trim()).filter(Boolean)
+  const specLinePattern = /^([^:：]+)[:：]\s*(.+)$/
+  const englishLines = lines.filter((line) => !/[\u4e00-\u9fff]/.test(line))
+  const chineseLines = lines.filter((line) => /[\u4e00-\u9fff]/.test(line) && !specLinePattern.test(line.replace(/\s+/g, ' ')))
+
+  return {
+    chinese: chineseLines.join('\n'),
+    english: englishLines.join('\n'),
+  }
 }
 
 export default async function ProductDetailPage({ params }: Props) {
@@ -59,7 +147,8 @@ export default async function ProductDetailPage({ params }: Props) {
     .filter(Boolean)
 
   const brand = typeof product.brand === 'object' ? product.brand : null
-  const { english, chinese } = splitDescription(product.introHtml)
+  const { english, chinese } = splitDescription(product)
+  const specifications = buildDerivedSpecifications(product)
   const boxPrice = product.pricing?.price
   const cartonPrice = typeof boxPrice === 'number' ? boxPrice * 10 : null
   const wholesalePrice = typeof cartonPrice === 'number' ? Number((cartonPrice * 0.88).toFixed(2)) : null
@@ -114,41 +203,12 @@ export default async function ProductDetailPage({ params }: Props) {
       <div className="max-w-7xl mx-auto px-5 sm:px-8 py-8 sm:py-12">
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_380px] gap-10 lg:gap-16">
           <div className="space-y-8">
-            <div className="flex flex-col gap-3">
-              <div className="relative bg-ink-3 border border-gold/10 aspect-square sm:aspect-video flex items-center justify-center overflow-hidden">
-                {gallery[0] ? <img alt="Image 1" className="max-h-full max-w-full object-contain p-4" src={gallery[0]} style={{ animation: 'fadeUp 0.2s ease both' }} /> : null}
-                <button className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-ink/70 hover:bg-ink border border-gold/15 hover:border-gold/40 text-muted hover:text-gold transition-all flex items-center justify-center text-lg" type="button">
-                  ‹
-                </button>
-                <button className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-ink/70 hover:bg-ink border border-gold/15 hover:border-gold/40 text-muted hover:text-gold transition-all flex items-center justify-center text-lg" type="button">
-                  ›
-                </button>
-                <div className="absolute bottom-3 left-0 right-0 flex justify-center">
-                  <span className="font-mono text-[10px] text-muted/60 bg-ink/80 px-2 py-0.5">
-                    1 / {gallery.length || 1}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex gap-1.5 overflow-x-auto [overscroll-behavior:contain] [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                {gallery.map((imageUrl, index) => (
-                  <button
-                    className={`flex-shrink-0 w-14 h-14 bg-ink-3 border transition-colors overflow-hidden ${
-                      index === 0 ? 'border-gold/50' : 'border-gold/8 hover:border-gold/25'
-                    }`}
-                    key={`${imageUrl}-${index}`}
-                    type="button"
-                  >
-                    <img alt={`Thumb ${index + 1}`} className="w-full h-full object-contain p-1" loading="lazy" src={imageUrl} />
-                  </button>
-                ))}
-              </div>
-            </div>
+            <ProductGallery images={gallery} />
 
             <div className="p-5 rounded-2xl bg-ink-2 border border-black/[0.05]">
               <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-muted/40 mb-3">商品说明</p>
-              {english ? <p className="text-[13px] text-ash/80 leading-relaxed mb-3">{english}</p> : null}
-              {chinese ? <p className="font-chinese text-[12px] text-muted/40 leading-loose">{chinese}</p> : null}
+              {english ? <p className="text-[13px] text-ash/80 leading-relaxed mb-3 whitespace-pre-line">{english}</p> : null}
+              {chinese ? <p className="font-chinese text-[12px] text-muted/40 leading-loose whitespace-pre-line">{chinese}</p> : null}
             </div>
           </div>
 
@@ -193,12 +253,18 @@ export default async function ProductDetailPage({ params }: Props) {
                 <p className="text-[11px] font-semibold tracking-[0.1em] uppercase text-muted/50">规格参数</p>
               </div>
               <div className="divide-y divide-black/[0.04]">
-                {(product.specifications || []).map((item, index) => (
-                  <div className="flex items-center px-4 py-2.5" key={`${item.label}-${index}`}>
-                    <span className="text-[12px] text-muted/60 w-36 shrink-0">{item.label}</span>
-                    <span className="font-chinese text-[13px] text-ash/80">{item.value}</span>
+                {specifications.length ? (
+                  specifications.map((item, index) => (
+                    <div className="flex items-center px-4 py-2.5" key={`${item.label}-${index}`}>
+                      <span className="text-[12px] text-muted/60 w-36 shrink-0">{item.label}</span>
+                      <span className="font-chinese text-[13px] text-ash/80">{item.value}</span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex items-center px-4 py-2.5">
+                    <span className="text-[12px] text-muted/45">当前商品还没有补充规格参数。</span>
                   </div>
-                ))}
+                )}
               </div>
             </div>
 

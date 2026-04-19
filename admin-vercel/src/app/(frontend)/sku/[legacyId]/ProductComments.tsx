@@ -87,7 +87,7 @@ export function ProductComments({ comments: initialComments, currentUser, produc
         setTurnstileToken('')
       },
       sitekey: turnstile.siteKey,
-      theme: 'dark',
+      theme: 'light',
     })
 
     return () => {
@@ -183,15 +183,15 @@ export function ProductComments({ comments: initialComments, currentUser, produc
                     </span>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-[13px] font-medium text-ash">{comment.authorName}</span>
+                        <span className="text-[15px] font-medium text-ash">{comment.authorName}</span>
                         <span className="text-[10px] px-2 py-0.5 rounded-full bg-gold/10 text-gold border border-gold/20">
                           {comment.source === 'user' ? '登录用户' : '游客'}
                         </span>
                       </div>
-                      <p className="text-[11px] text-muted/40 mt-0.5">{formatCreatedAt(comment.createdAt)}</p>
+                      <p className="text-[12px] text-muted/40 mt-0.5">{formatCreatedAt(comment.createdAt)}</p>
                     </div>
                   </div>
-                  <p className="text-[13px] text-ash/75 leading-relaxed whitespace-pre-wrap">{comment.content}</p>
+                  <p className="text-[15px] text-ash/75 leading-relaxed whitespace-pre-wrap">{comment.content}</p>
                 </div>
               ))
             ) : (
@@ -241,9 +241,9 @@ export function ProductComments({ comments: initialComments, currentUser, produc
 
               {message ? <p className="text-[12px] text-muted/55 leading-relaxed">{message}</p> : null}
 
-              <div className="pt-1">
+              <div className="pt-1 flex justify-end">
                 <button
-                  className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-full text-[13px] font-semibold transition-all bg-gold text-ink border border-gold/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] hover:bg-[#e4bc66] disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-[13px] font-semibold transition-all bg-gold text-ink border border-gold/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] hover:bg-[#e4bc66] disabled:opacity-60 disabled:cursor-not-allowed"
                   disabled={isSubmitting}
                   type="submit"
                 >
