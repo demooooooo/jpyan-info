@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { startTransition, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { getProductFormatTags, getProductPrice, toTemplateImageUrl } from '@/lib/frontend-data'
 
@@ -110,6 +110,7 @@ export const filterCollectionProducts = (
 }
 
 export function CollectionBrowser({ brands, labels, products }: CollectionBrowserProps) {
+  const [draftQuery, setDraftQuery] = useState('')
   const [query, setQuery] = useState('')
   const [brandFilter, setBrandFilter] = useState('all')
   const [formatFilter, setFormatFilter] = useState('all')
@@ -117,7 +118,6 @@ export function CollectionBrowser({ brands, labels, products }: CollectionBrowse
   const [sortKey, setSortKey] = useState('newest')
   const [openMenu, setOpenMenu] = useState<null | 'brand' | 'format' | 'price' | 'sort'>(null)
   const menuRef = useRef<HTMLDivElement | null>(null)
-  const deferredQuery = useDeferredValue(query)
 
   useEffect(() => {
     const onPointerDown = (event: MouseEvent) => {
@@ -129,6 +129,16 @@ export function CollectionBrowser({ brands, labels, products }: CollectionBrowse
     document.addEventListener('mousedown', onPointerDown)
     return () => document.removeEventListener('mousedown', onPointerDown)
   }, [])
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setQuery(draftQuery)
+    }, 180)
+
+    return () => {
+      window.clearTimeout(timer)
+    }
+  }, [draftQuery])
 
   const formatOptions = useMemo(() => {
     const values = new Set<string>()
@@ -152,9 +162,9 @@ export function CollectionBrowser({ brands, labels, products }: CollectionBrowse
       formatFilter,
       priceFilter,
       sortKey,
-      query: deferredQuery,
+      query,
     })
-  }, [brandFilter, deferredQuery, formatFilter, priceFilter, products, sortKey])
+  }, [brandFilter, formatFilter, priceFilter, products, query, sortKey])
 
   const currentBrandLabel = brandOptions.find((item) => item.value === brandFilter)?.label || labels.all
   const currentFormatLabel = formatOptions.find((item) => item.value === formatFilter)?.label || labels.format
@@ -196,16 +206,11 @@ export function CollectionBrowser({ brands, labels, products }: CollectionBrowse
                   autoComplete="off"
                   className="w-full bg-ink-2 rounded-full pl-9 pr-3 py-[6px] text-ash placeholder:text-muted/40 focus:outline-none focus:bg-ink-3 transition-colors border border-black/[0.07] focus:border-black/[0.12]"
                   name="q"
-                  onChange={(event) => {
-                    const nextValue = event.target.value
-                    startTransition(() => {
-                      setQuery(nextValue)
-                    })
-                  }}
+                  onChange={(event) => setDraftQuery(event.target.value)}
                   placeholder={labels.searchPlaceholder}
                   style={{ fontSize: '16px' }}
                   type="text"
-                  value={query}
+                  value={draftQuery}
                 />
               </div>
             </div>
@@ -256,7 +261,7 @@ export function CollectionBrowser({ brands, labels, products }: CollectionBrowse
         <p className="text-[12px] text-muted/50 font-medium">共 {filteredProducts.length} 个商品</p>
       </div>
       <main className="max-w-7xl mx-auto px-5 sm:px-8 pb-16" style={{ overflowAnchor: 'none' }}>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5 sm:gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5 sm:gap-3" style={{ overflowAnchor: 'none' }}>
           {filteredProducts.map((product, index) => {
             const imageUrl = toTemplateImageUrl(product.primaryImageUrl || product.gallery?.[0]?.imageUrl, 'products')
             const brandName = getBrandName(product)
