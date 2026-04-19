@@ -3,7 +3,7 @@ import type { CollectionConfig } from 'payload'
 export const Media: CollectionConfig = {
   slug: 'media',
   admin: {
-    useAsTitle: 'alt',
+    useAsTitle: 'fileUrl',
   },
   access: {
     read: () => true,
@@ -18,6 +18,10 @@ export const Media: CollectionConfig = {
       name: 'sourceUrl',
       type: 'text',
     },
+    {
+      name: 'fileUrl',
+      type: 'text',
+      required: true,
+    },
   ],
-  upload: true,
 }

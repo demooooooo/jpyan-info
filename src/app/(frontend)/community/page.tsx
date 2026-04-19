@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { buildCommunityRows } from '@/lib/frontend-data'
 import { getPayloadClient } from '@/lib/payload'
 
+export const dynamic = 'force-dynamic'
+
 export default async function CommunityPage() {
   const payload = await getPayloadClient()
   const result = await payload.find({

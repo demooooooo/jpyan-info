@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { getBrandName, slugifyName, toTemplateImageUrl } from '@/lib/frontend-data'
 import { getPayloadClient } from '@/lib/payload'
 
+export const dynamic = 'force-dynamic'
+
 const timeAgo = (value?: string | null) => {
   if (!value) return ''
 

@@ -4,16 +4,24 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build",
-    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev --no-server-fast-refresh",
+    "build": "npm run prepare:cloudflare && cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build",
+    "deploy": "npm run deploy:database && npm run deploy:app",
+    "deploy:app": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "deploy:database": "cross-env NODE_ENV=production PAYLOAD_SECRET=ignore payload migrate",
+    "dev": "npm run prepare:cloudflare && cross-env NODE_OPTIONS=--no-deprecation next dev --no-server-fast-refresh",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
+    "generate:template-data": "tsx scripts/generate-template-data.ts",
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "import:yyanhub": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/import-yyanhub.ts",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
+    "prepare:cloudflare": "npm run generate:template-data",
+    "preview:cloudflare": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
   },
   "dependencies": {
+    "@opennextjs/cloudflare": "^1.6.4",
+    "@payloadcms/db-d1-sqlite": "3.83.0",
     "@payloadcms/db-sqlite": "3.83.0",
     "@payloadcms/next": "3.83.0",
     "@payloadcms/richtext-lexical": "3.83.0",
@@ -36,7 +44,8 @@
     "eslint": "^9.26.0",
     "eslint-config-next": "16.2.3",
     "tsx": "4.21.0",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "wrangler": "^4.83.0"
   },
   "engines": {
     "node": ">=20.9.0"

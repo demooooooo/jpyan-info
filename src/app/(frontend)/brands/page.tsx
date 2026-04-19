@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { toTemplateImageUrl } from '@/lib/frontend-data'
 import { getPayloadClient } from '@/lib/payload'
 
+export const dynamic = 'force-dynamic'
+
 export default async function BrandsPage() {
   const payload = await getPayloadClient()
   const [brands, products] = await Promise.all([

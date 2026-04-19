@@ -1,9 +1,11 @@
-import { sqliteAdapter } from '@payloadcms/db-sqlite'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import fs from 'fs'
 import path from 'path'
+import { sqliteD1Adapter } from '@payloadcms/db-d1-sqlite'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
-import sharp from 'sharp'
+import { getCloudflareContext, type CloudflareContext } from '@opennextjs/cloudflare'
+import type { GetPlatformProxyOptions } from 'wrangler'
 
 import { Brands } from './collections/Brands'
 import { Users } from './collections/Users'
@@ -14,6 +16,37 @@ import { SiteSettings } from './globals/SiteSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+const realpath = (value: string) => (fs.existsSync(value) ? fs.realpathSync(value) : undefined)
+
+const isCLI = process.argv.some((value) => realpath(value)?.endsWith(path.join('payload', 'bin.js')))
+const isProduction = process.env.NODE_ENV === 'production'
+const useWranglerProxy =
+  isCLI || !isProduction || process.env.PAYLOAD_USE_WRANGLER_PROXY === 'true'
+
+const createLog =
+  (level: string, fn: typeof console.log) => (objOrMsg: object | string, msg?: string) => {
+    if (typeof objOrMsg === 'string') {
+      fn(JSON.stringify({ level, msg: objOrMsg }))
+    } else {
+      fn(JSON.stringify({ level, ...objOrMsg, msg: msg ?? (objOrMsg as { msg?: string }).msg }))
+    }
+  }
+
+const cloudflareLogger = {
+  level: process.env.PAYLOAD_LOG_LEVEL || 'info',
+  msgPrefix: '',
+  trace: createLog('trace', console.debug),
+  debug: createLog('debug', console.debug),
+  info: createLog('info', console.log),
+  warn: createLog('warn', console.warn),
+  error: createLog('error', console.error),
+  fatal: createLog('fatal', console.error),
+  silent: () => {},
+} as any
+
+const cloudflare = useWranglerProxy
+  ? await getCloudflareContextFromWrangler()
+  : await getCloudflareContext({ async: true })
 
 export default buildConfig({
   admin: {
@@ -29,11 +62,17 @@ export default buildConfig({
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   globals: [SiteSettings],
-  db: sqliteAdapter({
-    client: {
-      url: process.env.DATABASE_URI || 'file:./payload.db',
-    },
+  db: sqliteD1Adapter({
+    binding: cloudflare.env.D1,
   }),
-  sharp,
+  logger: isProduction ? cloudflareLogger : undefined,
   plugins: [],
 })
+
+function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
+  return import(/* webpackIgnore: true */ `${'__wrangler'.replaceAll('_', '')}`).then(({ getPlatformProxy }) =>
+    getPlatformProxy({
+      remoteBindings: isProduction,
+    } satisfies GetPlatformProxyOptions),
+  )
+}

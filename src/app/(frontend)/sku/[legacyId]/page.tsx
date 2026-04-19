@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation'
 import { toTemplateImageUrl } from '@/lib/frontend-data'
 import { getPayloadClient } from '@/lib/payload'
 
+export const dynamic = 'force-dynamic'
+
 type Props = {
   params: Promise<{
     legacyId: string

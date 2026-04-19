@@ -5,6 +5,8 @@ import { toTemplateImageUrl } from '@/lib/frontend-data'
 import { getPayloadClient } from '@/lib/payload'
 import { getHomeGalleryPositions } from '@/lib/site-template'
 
+export const dynamic = 'force-dynamic'
+
 const positions = getHomeGalleryPositions()
 
 type Props = {
