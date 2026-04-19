@@ -72,6 +72,7 @@ export interface Config {
     brands: Brand;
     products: Product;
     'product-entries': ProductEntry;
+    'product-comments': ProductComment;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -84,6 +85,7 @@ export interface Config {
     brands: BrandsSelect<false> | BrandsSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     'product-entries': ProductEntriesSelect<false> | ProductEntriesSelect<true>;
+    'product-comments': ProductCommentsSelect<false> | ProductCommentsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -258,6 +260,22 @@ export interface ProductEntry {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-comments".
+ */
+export interface ProductComment {
+  id: number;
+  product: number | Product;
+  content: string;
+  authorName: string;
+  authorEmail?: string | null;
+  authorUser?: (number | null) | User;
+  source: 'guest' | 'user';
+  isVisible?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -299,6 +317,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'product-entries';
         value: number | ProductEntry;
+      } | null)
+    | ({
+        relationTo: 'product-comments';
+        value: number | ProductComment;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -466,6 +488,21 @@ export interface ProductEntriesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-comments_select".
+ */
+export interface ProductCommentsSelect<T extends boolean = true> {
+  product?: T;
+  content?: T;
+  authorName?: T;
+  authorEmail?: T;
+  authorUser?: T;
+  source?: T;
+  isVisible?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -548,6 +585,15 @@ export interface SiteSetting {
         id?: string | null;
       }[]
     | null;
+  turnstileEnabled?: boolean | null;
+  /**
+   * 前台会使用这个公开 Key 渲染验证码。
+   */
+  turnstileSiteKey?: string | null;
+  /**
+   * 提交评论时，服务端会用这个密钥向 Cloudflare 校验验证码。
+   */
+  turnstileSecretKey?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -594,6 +640,9 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         content?: T;
         id?: T;
       };
+  turnstileEnabled?: T;
+  turnstileSiteKey?: T;
+  turnstileSecretKey?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

@@ -218,5 +218,30 @@ export const SiteSettings: GlobalConfig = {
         },
       ],
     },
+    {
+      name: 'turnstileEnabled',
+      label: '启用 Cloudflare 验证码',
+      type: 'checkbox',
+      defaultValue: false,
+    },
+    {
+      name: 'turnstileSiteKey',
+      label: 'Cloudflare 验证码 Site Key',
+      type: 'text',
+      admin: {
+        description: '前台会使用这个公开 Key 渲染验证码。',
+      },
+    },
+    {
+      name: 'turnstileSecretKey',
+      label: 'Cloudflare 验证码 Secret Key',
+      type: 'text',
+      access: {
+        read: ({ req }) => Boolean(req.user),
+      },
+      admin: {
+        description: '提交评论时，服务端会用这个密钥向 Cloudflare 校验验证码。',
+      },
+    },
   ],
 }

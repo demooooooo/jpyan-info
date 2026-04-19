@@ -12,6 +12,7 @@ import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Products } from './collections/Products'
 import { ProductEntries } from './collections/ProductEntries'
+import { ProductComments } from './collections/ProductComments'
 import { SiteSettings } from './globals/SiteSettings'
 
 const filename = fileURLToPath(import.meta.url)
@@ -68,7 +69,7 @@ export default buildConfig({
       defaultOGImageType: 'off',
     },
   },
-  collections: [Users, Media, Brands, Products, ProductEntries],
+  collections: [Users, Media, Brands, Products, ProductEntries, ProductComments],
   graphQL: {
     disable: true,
   },

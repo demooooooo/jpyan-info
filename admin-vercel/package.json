@@ -26,6 +26,8 @@
     "preview:cloudflare": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "sync:site-settings": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/sync-site-settings.ts"
+    ,
+    "sync:comment-feature-schema": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/sync-comment-feature-schema.ts"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.6.4",

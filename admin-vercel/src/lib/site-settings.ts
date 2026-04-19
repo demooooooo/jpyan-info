@@ -1,4 +1,5 @@
 import { cache } from 'react'
+import { Pool } from 'pg'
 
 import type { SiteSetting } from '@/payload-types'
 
@@ -37,6 +38,8 @@ export type SiteSettingsView = {
   homeWhyDialogParagraphs: Array<{
     content: string
   }>
+  turnstileEnabled: boolean
+  turnstileSiteKey: string
 }
 
 const DEFAULT_SITE_SETTINGS: SiteSettingsView = {
@@ -73,9 +76,12 @@ const DEFAULT_SITE_SETTINGS: SiteSettingsView = {
     { content: '前台保留原有页面样式，后台负责统一管理品牌、商品、图片和首页展示内容。' },
     { content: '这样你后面补商品、换图片、改首页文案，都不用再手改页面文件。' },
   ],
+  turnstileEnabled: false,
+  turnstileSiteKey: '',
 }
 
 const textOr = (value: unknown, fallback: string) => (typeof value === 'string' && value.trim() ? value.trim() : fallback)
+const boolOr = (value: unknown, fallback: boolean) => (typeof value === 'boolean' ? value : fallback)
 
 const normalizeSiteSettings = (value?: Partial<SiteSetting> | null): SiteSettingsView => ({
   siteTitle: textOr(value?.siteTitle, DEFAULT_SITE_SETTINGS.siteTitle),
@@ -116,6 +122,8 @@ const normalizeSiteSettings = (value?: Partial<SiteSetting> | null): SiteSetting
           content: textOr(item?.content, ''),
         }))
       : DEFAULT_SITE_SETTINGS.homeWhyDialogParagraphs,
+  turnstileEnabled: boolOr(value?.turnstileEnabled, DEFAULT_SITE_SETTINGS.turnstileEnabled),
+  turnstileSiteKey: textOr(value?.turnstileSiteKey, DEFAULT_SITE_SETTINGS.turnstileSiteKey),
 })
 
 export const getSiteSettings = cache(async () => {
@@ -132,3 +140,51 @@ export const getSiteSettings = cache(async () => {
 })
 
 export const defaultSiteSettings = DEFAULT_SITE_SETTINGS
+
+let turnstilePool: Pool | null = null
+
+const getTurnstilePool = () => {
+  const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL
+
+  if (!connectionString) {
+    throw new Error('DATABASE_URL or POSTGRES_URL is required')
+  }
+
+  if (!turnstilePool) {
+    turnstilePool = new Pool({ connectionString })
+  }
+
+  return turnstilePool
+}
+
+export const getTurnstileServerSettings = async () => {
+  try {
+    const pool = getTurnstilePool()
+    const result = await pool.query<{
+      turnstile_enabled: boolean | null
+      turnstile_secret_key: string | null
+      turnstile_site_key: string | null
+    }>(
+      `
+        select turnstile_enabled, turnstile_site_key, turnstile_secret_key
+        from site_settings
+        where id = 1
+        limit 1
+      `,
+    )
+
+    const settings = result.rows[0]
+
+    return {
+      enabled: boolOr(settings?.turnstile_enabled, false),
+      secretKey: textOr(settings?.turnstile_secret_key, ''),
+      siteKey: textOr(settings?.turnstile_site_key, ''),
+    }
+  } catch {
+    return {
+      enabled: false,
+      secretKey: '',
+      siteKey: '',
+    }
+  }
+}

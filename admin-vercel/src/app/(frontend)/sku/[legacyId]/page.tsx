@@ -1,8 +1,13 @@
 import Link from 'next/link'
+import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
 
+import { ProductComments } from './ProductComments'
+import { getCurrentFrontendUser } from '@/lib/auth-user'
+import { getProductCommentList } from '@/lib/comment-store'
 import { toTemplateImageUrl } from '@/lib/frontend-data'
 import { getPayloadClient } from '@/lib/payload'
+import { getSiteSettings } from '@/lib/site-settings'
 
 export const dynamic = 'force-dynamic'
 
@@ -28,19 +33,26 @@ export default async function ProductDetailPage({ params }: Props) {
   if (Number.isNaN(numericId)) notFound()
 
   const payload = await getPayloadClient()
-  const result = await payload.find({
-    collection: 'products',
-    depth: 2,
-    limit: 1,
-    where: {
-      legacyId: {
-        equals: numericId,
+  const requestHeaders = new Headers(await headers())
+  const [result, currentUser, siteSettings] = await Promise.all([
+    payload.find({
+      collection: 'products',
+      depth: 2,
+      limit: 1,
+      where: {
+        legacyId: {
+          equals: numericId,
+        },
       },
-    },
-  })
+    }),
+    getCurrentFrontendUser(requestHeaders),
+    getSiteSettings(),
+  ])
 
   const product = result.docs[0]
   if (!product) notFound()
+
+  const comments = await getProductCommentList(product.id)
 
   const gallery = [product.primaryImageUrl, ...(product.gallery?.map((item) => item.imageUrl) || [])]
     .map((value) => toTemplateImageUrl(value, 'products'))
@@ -247,6 +259,16 @@ export default async function ProductDetailPage({ params }: Props) {
           </div>
         </div>
       </div>
+
+      <ProductComments
+        comments={comments}
+        currentUser={currentUser}
+        productId={product.id}
+        turnstile={{
+          enabled: siteSettings.turnstileEnabled && Boolean(siteSettings.turnstileSiteKey),
+          siteKey: siteSettings.turnstileSiteKey,
+        }}
+      />
     </div>
   )
 }
