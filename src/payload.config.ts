@@ -5,7 +5,6 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import { getCloudflareContext, type CloudflareContext } from '@opennextjs/cloudflare'
-import type { GetPlatformProxyOptions } from 'wrangler'
 
 import { Brands } from './collections/Brands'
 import { Users } from './collections/Users'
@@ -18,10 +17,8 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 const realpath = (value: string) => (fs.existsSync(value) ? fs.realpathSync(value) : undefined)
 
-const isCLI = process.argv.some((value) => realpath(value)?.endsWith(path.join('payload', 'bin.js')))
 const isProduction = process.env.NODE_ENV === 'production'
-const useWranglerProxy =
-  isCLI || !isProduction || process.env.PAYLOAD_USE_WRANGLER_PROXY === 'true'
+const useWranglerProxy = process.env.PAYLOAD_USE_WRANGLER_PROXY === 'true'
 
 const createLog =
   (level: string, fn: typeof console.log) => (objOrMsg: object | string, msg?: string) => {
@@ -73,6 +70,6 @@ function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
   return import(/* webpackIgnore: true */ `${'__wrangler'.replaceAll('_', '')}`).then(({ getPlatformProxy }) =>
     getPlatformProxy({
       remoteBindings: isProduction,
-    } satisfies GetPlatformProxyOptions),
+    }),
   )
 }
