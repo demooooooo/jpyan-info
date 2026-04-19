@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { startTransition, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 
 import { getProductFormatTags, getProductPrice, toTemplateImageUrl } from '@/lib/frontend-data'
 
@@ -117,6 +117,7 @@ export function CollectionBrowser({ brands, labels, products }: CollectionBrowse
   const [sortKey, setSortKey] = useState('newest')
   const [openMenu, setOpenMenu] = useState<null | 'brand' | 'format' | 'price' | 'sort'>(null)
   const menuRef = useRef<HTMLDivElement | null>(null)
+  const deferredQuery = useDeferredValue(query)
 
   useEffect(() => {
     const onPointerDown = (event: MouseEvent) => {
@@ -150,10 +151,10 @@ export function CollectionBrowser({ brands, labels, products }: CollectionBrowse
       brandFilter,
       formatFilter,
       priceFilter,
-      query,
       sortKey,
+      query: deferredQuery,
     })
-  }, [brandFilter, formatFilter, priceFilter, products, query, sortKey])
+  }, [brandFilter, deferredQuery, formatFilter, priceFilter, products, sortKey])
 
   const currentBrandLabel = brandOptions.find((item) => item.value === brandFilter)?.label || labels.all
   const currentFormatLabel = formatOptions.find((item) => item.value === formatFilter)?.label || labels.format
@@ -183,7 +184,7 @@ export function CollectionBrowser({ brands, labels, products }: CollectionBrowse
 
   return (
     <>
-      <div className="sticky top-[56px] z-40 bg-ink/95 backdrop-blur-xl border-b border-black/[0.05]" id="collection">
+      <div className="sticky top-[56px] z-40 bg-ink/95 backdrop-blur-xl border-b border-black/[0.05]" id="collection" style={{ overflowAnchor: 'none' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-8 py-2.5 flex items-center gap-2" ref={menuRef}>
           <div className="w-44 sm:w-56 shrink-0">
             <div className="relative w-full">
@@ -195,7 +196,12 @@ export function CollectionBrowser({ brands, labels, products }: CollectionBrowse
                   autoComplete="off"
                   className="w-full bg-ink-2 rounded-full pl-9 pr-3 py-[6px] text-ash placeholder:text-muted/40 focus:outline-none focus:bg-ink-3 transition-colors border border-black/[0.07] focus:border-black/[0.12]"
                   name="q"
-                  onChange={(event) => setQuery(event.target.value)}
+                  onChange={(event) => {
+                    const nextValue = event.target.value
+                    startTransition(() => {
+                      setQuery(nextValue)
+                    })
+                  }}
                   placeholder={labels.searchPlaceholder}
                   style={{ fontSize: '16px' }}
                   type="text"
@@ -249,7 +255,7 @@ export function CollectionBrowser({ brands, labels, products }: CollectionBrowse
       <div className="max-w-7xl mx-auto px-5 sm:px-8 pt-5 pb-3">
         <p className="text-[12px] text-muted/50 font-medium">共 {filteredProducts.length} 个商品</p>
       </div>
-      <main className="max-w-7xl mx-auto px-5 sm:px-8 pb-16">
+      <main className="max-w-7xl mx-auto px-5 sm:px-8 pb-16" style={{ overflowAnchor: 'none' }}>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5 sm:gap-3">
           {filteredProducts.map((product, index) => {
             const imageUrl = toTemplateImageUrl(product.primaryImageUrl || product.gallery?.[0]?.imageUrl, 'products')
