@@ -120,6 +120,8 @@ export function CollectionBrowser({ brands, labels, products }: CollectionBrowse
   const menuRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const pendingInputTopRef = useRef<number | null>(null)
+  const resultsRef = useRef<HTMLDivElement | null>(null)
+  const [lockedResultsMinHeight, setLockedResultsMinHeight] = useState<number | null>(null)
 
   useEffect(() => {
     const onPointerDown = (event: MouseEvent) => {
@@ -140,6 +142,19 @@ export function CollectionBrowser({ brands, labels, products }: CollectionBrowse
     return () => {
       window.clearTimeout(timer)
     }
+  }, [draftQuery])
+
+  useEffect(() => {
+    if (document.activeElement === inputRef.current && resultsRef.current) {
+      const nextHeight = resultsRef.current.offsetHeight
+      setLockedResultsMinHeight((current) => {
+        if (current == null) return nextHeight
+        return Math.max(current, nextHeight)
+      })
+      return
+    }
+
+    setLockedResultsMinHeight(null)
   }, [draftQuery])
 
   const formatOptions = useMemo(() => {
@@ -237,7 +252,14 @@ export function CollectionBrowser({ brands, labels, products }: CollectionBrowse
                   name="q"
                   onChange={(event) => {
                     pendingInputTopRef.current = inputRef.current?.getBoundingClientRect().top ?? null
+                    if (resultsRef.current) {
+                      setLockedResultsMinHeight(resultsRef.current.offsetHeight)
+                    }
                     setDraftQuery(event.target.value)
+                  }}
+                  onBlur={() => {
+                    pendingInputTopRef.current = null
+                    setLockedResultsMinHeight(null)
                   }}
                   placeholder={labels.searchPlaceholder}
                   ref={inputRef}
@@ -294,7 +316,8 @@ export function CollectionBrowser({ brands, labels, products }: CollectionBrowse
         <p className="text-[12px] text-muted/50 font-medium">共 {filteredProducts.length} 个商品</p>
       </div>
       <main className="max-w-7xl mx-auto px-5 sm:px-8 pb-16" style={{ overflowAnchor: 'none' }}>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5 sm:gap-3" style={{ overflowAnchor: 'none' }}>
+        <div ref={resultsRef} style={{ minHeight: lockedResultsMinHeight ?? undefined, overflowAnchor: 'none' }}>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5 sm:gap-3" style={{ overflowAnchor: 'none' }}>
           {filteredProducts.map((product, index) => {
             const imageUrl = toTemplateImageUrl(product.primaryImageUrl || product.gallery?.[0]?.imageUrl, 'products')
             const brandName = getBrandName(product)
@@ -341,10 +364,11 @@ export function CollectionBrowser({ brands, labels, products }: CollectionBrowse
               </Link>
             )
           })}
+          </div>
+          {filteredProducts.length === 0 ? (
+            <div className="py-20 text-center text-muted/45 text-[13px]">没有找到符合条件的商品。</div>
+          ) : null}
         </div>
-        {filteredProducts.length === 0 ? (
-          <div className="py-20 text-center text-muted/45 text-[13px]">没有找到符合条件的商品。</div>
-        ) : null}
       </main>
     </>
   )
