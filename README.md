@@ -35,3 +35,14 @@ npm run dev
 ```bash
 npm run import:yyanhub
 ```
+
+## Vercel / Neon
+
+项目在检测到 `DATABASE_URL` 或 `POSTGRES_URL` 后，会自动改走 Postgres。
+
+常用命令：
+
+```bash
+npm run migrate:postgres
+npm run build:vercel
+```

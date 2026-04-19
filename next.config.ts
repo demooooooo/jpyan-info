@@ -4,7 +4,12 @@ import type { NextConfig } from 'next'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-initOpenNextCloudflareForDev()
+const isVercelBuild = process.env.VERCEL === '1' || process.env.VERCEL === 'true'
+const hasPostgresEnv = Boolean(process.env.DATABASE_URL || process.env.POSTGRES_URL)
+
+if (!isVercelBuild && !hasPostgresEnv) {
+  initOpenNextCloudflareForDev()
+}
 
 const __filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(__filename)

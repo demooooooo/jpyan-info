@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import { postgresAdapter } from '@payloadcms/db-postgres'
 import { sqliteD1Adapter } from '@payloadcms/db-d1-sqlite'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -18,6 +19,8 @@ const realpath = (value: string) => (fs.existsSync(value) ? fs.realpathSync(valu
 
 const isProduction = process.env.NODE_ENV === 'production'
 const useWranglerProxy = process.env.PAYLOAD_USE_WRANGLER_PROXY === 'true'
+const postgresConnectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL
+const isDev = process.env.NODE_ENV !== 'production'
 
 const createLog =
   (level: string, fn: typeof console.log) => (objOrMsg: object | string, msg?: string) => {
@@ -40,9 +43,19 @@ const cloudflareLogger = {
   silent: () => {},
 } as any
 
-const cloudflare = useWranglerProxy
-  ? await getCloudflareContextFromWrangler()
-  : await getCloudflareContext({ async: true })
+const db = postgresConnectionString
+  ? postgresAdapter({
+      pool: {
+        connectionString: postgresConnectionString,
+      },
+      push: isDev,
+    })
+  : sqliteD1Adapter({
+      binding: (useWranglerProxy
+        ? await getCloudflareContextFromWrangler()
+        : await getCloudflareContext({ async: true })
+      ).env.D1,
+    })
 
 export default buildConfig({
   admin: {
@@ -64,9 +77,7 @@ export default buildConfig({
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   globals: [SiteSettings],
-  db: sqliteD1Adapter({
-    binding: cloudflare.env.D1,
-  }),
+  db,
   logger: isProduction ? cloudflareLogger : undefined,
   plugins: [],
 })
