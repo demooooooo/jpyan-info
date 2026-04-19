@@ -27,10 +27,63 @@ export const getFilenameFromUrl = (value?: string | null) => {
   return filename || null
 }
 
-export const toTemplateImageUrl = (value: string | null | undefined, category: 'products' | 'brands' | 'avatars') => {
+export const toLocalImagePath = (value: string | null | undefined, category: 'products' | 'brands' | 'avatars') => {
+  if (!value) return ''
+
+  if (value.startsWith(`/api/img/${category}/`)) {
+    return value
+  }
+
   const filename = getFilenameFromUrl(value)
   if (!filename) return ''
+
   return `/api/img/${category}/${filename}`
+}
+
+export const toTemplateImageUrl = (value: string | null | undefined, category: 'products' | 'brands' | 'avatars') => {
+  return toLocalImagePath(value, category)
+}
+
+export const toMoney = (value: unknown) => {
+  let parsed: number | null = null
+
+  if (typeof value === 'number') {
+    parsed = Number.isFinite(value) && value > 0 ? value : null
+  } else if (typeof value === 'string') {
+    const next = Number(value)
+    parsed = Number.isFinite(next) && next > 0 ? next : null
+  }
+
+  if (parsed == null) return null
+
+  if (parsed >= 1000) {
+    parsed = parsed / 100
+  }
+
+  return Number.isInteger(parsed) ? parsed : Number(parsed.toFixed(2))
+}
+
+export const getProductPrice = (product: Record<string, unknown>) => {
+  const pricing = 'pricing' in product && product.pricing && typeof product.pricing === 'object' ? (product.pricing as Record<string, unknown>) : null
+
+  return toMoney(pricing?.price) ?? toMoney(pricing?.marketPrice)
+}
+
+const FORMAT_RULES = [
+  { label: '爆珠', matcher: /爆珠|splash|capsule/i },
+  { label: '细支', matcher: /细支|100's|100s|slim/i },
+  { label: '长杆', matcher: /长杆|long/i },
+  { label: '硬盒', matcher: /硬盒|box|ks/i },
+  { label: '软盒', matcher: /软盒|soft/i },
+  { label: '薄荷', matcher: /薄荷|menthol|mint/i },
+]
+
+export const getProductFormatTags = (product: Pick<Product, 'name' | 'brief' | 'englishName' | 'specifications'>) => {
+  const haystack = [product.name, product.brief, product.englishName, ...(product.specifications?.map((item) => `${item.label} ${item.value}`) || [])]
+    .filter(Boolean)
+    .join(' ')
+
+  return FORMAT_RULES.filter((rule) => rule.matcher.test(haystack)).map((rule) => rule.label)
 }
 
 export type CommunityRow = {

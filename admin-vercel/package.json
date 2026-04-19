@@ -19,11 +19,13 @@
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "import:yyanhub": "cross-env PAYLOAD_USE_WRANGLER_PROXY=true NODE_OPTIONS=--no-deprecation tsx scripts/import-yyanhub.ts",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
+    "localize:media": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/localize-media-paths.ts",
     "payload": "cross-env PAYLOAD_USE_WRANGLER_PROXY=true NODE_OPTIONS=--no-deprecation payload",
     "prepare:cloudflare": "npm run generate:template-data",
     "prune:template-images": "tsx scripts/prune-template-images.ts",
     "preview:cloudflare": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
+    "sync:site-settings": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/sync-site-settings.ts"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.6.4",
@@ -47,6 +49,7 @@
   },
   "devDependencies": {
     "@types/node": "22.19.9",
+    "@types/pg": "^8.15.5",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
     "eslint": "^9.26.0",

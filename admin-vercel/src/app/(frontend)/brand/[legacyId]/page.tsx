@@ -52,7 +52,7 @@ export default async function BrandDetailPage({ params }: Props) {
     <div className="min-h-screen bg-ink">
       <div className="border-b border-black/[0.06] bg-ink">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 py-10 sm:py-14">
-          <p className="text-[11px] font-medium tracking-[0.25em] uppercase text-muted/40 mb-3">Brand</p>
+          <p className="text-[11px] font-medium tracking-[0.25em] uppercase text-muted/40 mb-3">品牌详情</p>
           <div className="flex items-center gap-4">
             {brand.logoUrl ? (
               <img alt={brand.name} className="w-16 h-16 object-contain" src={toTemplateImageUrl(brand.logoUrl, 'brands')} />

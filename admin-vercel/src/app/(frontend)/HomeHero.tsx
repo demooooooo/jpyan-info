@@ -41,6 +41,25 @@ type PositionedProduct = HeroProduct & {
 type HomeHeroProps = {
   brandCount: number
   entries: HeroEntry[]
+  labels: {
+    browseCollection: string
+    heroSubtitle: string
+    heroTitle: string
+    howButton: string
+    howDialogItems: Array<{
+      body: string
+      glyph: string
+      title: string
+    }>
+    howDialogSubtitle: string
+    howDialogTitle: string
+    whyButton: string
+    whyDialogParagraphs: Array<{
+      content: string
+    }>
+    whyDialogSubtitle: string
+    whyDialogTitle: string
+  }
   products: HeroProduct[]
   productCount: number
 }
@@ -163,7 +182,7 @@ const getVisibleIds = (items: PositionedProduct[], view: ViewState, width: numbe
   return ids
 }
 
-export function HomeHero({ brandCount, entries, products, productCount }: HomeHeroProps) {
+export function HomeHero({ brandCount, entries, labels, products, productCount }: HomeHeroProps) {
   const layout = useMemo(() => buildGalleryLayout(products, 6), [products])
   const [view, setView] = useState<ViewState>({ scale: 0.1, x: 0, y: 0 })
   const [visibleIds, setVisibleIds] = useState<Set<HeroProduct['id']>>(new Set())
@@ -544,7 +563,7 @@ export function HomeHero({ brandCount, entries, products, productCount }: HomeHe
                   <div className="w-1.5 h-1.5 rounded-full bg-muted/30 animate-pulse" key={dot} style={{ animationDelay: `${dot * 140}ms` }} />
                 ))}
               </div>
-              <span className="text-muted/40 text-[11px] tracking-wide">Loading archive…</span>
+              <span className="text-muted/40 text-[11px] tracking-wide">正在载入…</span>
             </div>
           ) : null}
 
@@ -686,7 +705,7 @@ export function HomeHero({ brandCount, entries, products, productCount }: HomeHe
                       whiteSpace: 'nowrap',
                     }}
                   >
-                    中国卷烟博物馆
+                    {labels.heroTitle}
                   </h1>
                   <p
                     style={{
@@ -699,7 +718,7 @@ export function HomeHero({ brandCount, entries, products, productCount }: HomeHe
                       marginBottom: 20,
                     }}
                   >
-                    Chinese Cigarette Museum
+                    {labels.heroSubtitle}
                   </p>
                   <p
                     style={{
@@ -710,7 +729,7 @@ export function HomeHero({ brandCount, entries, products, productCount }: HomeHe
                       marginBottom: 32,
                     }}
                   >
-                    {brandCount.toLocaleString()} brands&#8194;·&#8194;{productCount.toLocaleString()} products
+                    {brandCount.toLocaleString()} 个品牌&#8194;·&#8194;{productCount.toLocaleString()} 个商品
                   </p>
                   <a
                     href="#collection"
@@ -739,15 +758,15 @@ export function HomeHero({ brandCount, entries, products, productCount }: HomeHe
                       cursor: 'pointer',
                     }}
                   >
-                    Browse collection
+                    {labels.browseCollection}
                     <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeWidth="2" viewBox="0 0 10 10" width="16">
                       <path d="M5 2v6M2 6l3 3 3-3" />
                     </svg>
                   </a>
                   <div style={{ display: 'flex', gap: 14, marginBottom: 36, pointerEvents: 'auto' }}>
                     {[
-                      { key: 'how', label: 'How it works', glyph: '说' },
-                      { key: 'why', label: 'Why this exists', glyph: '缘' },
+                      { key: 'how', label: labels.howButton, glyph: '说' },
+                      { key: 'why', label: labels.whyButton, glyph: '缘' },
                     ].map((item) => (
                       <button
                         key={item.key}
@@ -793,34 +812,6 @@ export function HomeHero({ brandCount, entries, products, productCount }: HomeHe
                       </button>
                     ))}
                   </div>
-                  <a
-                    href="https://x.com/0x_ultra"
-                    onMouseEnter={(event) => {
-                      event.currentTarget.style.color = 'rgba(108,108,118,0.6)'
-                    }}
-                    onMouseLeave={(event) => {
-                      event.currentTarget.style.color = 'rgba(108,108,118,0.28)'
-                    }}
-                    rel="noopener noreferrer"
-                    style={{
-                      pointerEvents: 'auto',
-                      fontFamily: 'var(--font-dm-sans), system-ui, sans-serif',
-                      fontSize: 16,
-                      color: 'rgba(108,108,118,0.28)',
-                      textDecoration: 'none',
-                      letterSpacing: '0.01em',
-                      transition: 'color 0.15s',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 7,
-                    }}
-                    target="_blank"
-                  >
-                    <svg fill="currentColor" height="15" viewBox="0 0 24 24" width="15">
-                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.91-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                    </svg>
-                    by @0x_ultra
-                  </a>
                 </div>
               ) : null}
             </div>
@@ -868,7 +859,7 @@ export function HomeHero({ brandCount, entries, products, productCount }: HomeHe
           </div>
           <div className="p-3 border-t border-black/[0.06]">
             <Link className="text-[12px] font-medium text-ash/70 hover:text-ash transition-colors" href="/admin">
-              Sign in to chat →
+              登录后参与讨论 →
             </Link>
           </div>
         </div>
@@ -935,18 +926,10 @@ export function HomeHero({ brandCount, entries, products, productCount }: HomeHe
 
             {activeModal === 'how' ? (
               <>
-                <h2 style={{ fontSize: 22, fontWeight: 700, color: 'rgb(11,11,13)', marginBottom: 6, letterSpacing: '-0.02em' }}>How it works</h2>
-                <p style={{ fontSize: 13, color: 'rgba(108,108,118,0.6)', marginBottom: 28, letterSpacing: '0.01em' }}>
-                  Everything you need to explore Chinese cigarettes.
-                </p>
+                <h2 style={{ fontSize: 22, fontWeight: 700, color: 'rgb(11,11,13)', marginBottom: 6, letterSpacing: '-0.02em' }}>{labels.howDialogTitle}</h2>
+                <p style={{ fontSize: 13, color: 'rgba(108,108,118,0.6)', marginBottom: 28, letterSpacing: '0.01em' }}>{labels.howDialogSubtitle}</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-                  {[
-                    { glyph: '图', title: 'Interactive gallery', body: 'Pan and zoom across thousands of pack artworks arranged in a spiral. Every pack is clickable — tap to open its full detail page.' },
-                    { glyph: '搜', title: 'Search in Chinese & English', body: 'Search by brand name, product name, Pinyin, or English translation. Results show instantly with images.' },
-                    { glyph: '藏', title: 'Build & share your collection', body: 'Sign in with Google to favorite packs and log what you have smoked. Set a username and share your public profile.' },
-                    { glyph: '志', title: 'Rich product data', body: 'Each SKU includes pack imagery, tar and nicotine ratings, pricing, brand history, and translated descriptions.' },
-                    { glyph: '新', title: 'Always growing', body: 'New products and brands can be added continuously so the archive keeps expanding over time.' },
-                  ].map((item) => (
+                  {labels.howDialogItems.map((item) => (
                     <div key={item.title} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
                       <span
                         style={{
@@ -973,25 +956,20 @@ export function HomeHero({ brandCount, entries, products, productCount }: HomeHe
               </>
             ) : (
               <>
-                <h2 style={{ fontSize: 22, fontWeight: 700, color: 'rgb(11,11,13)', marginBottom: 6, letterSpacing: '-0.02em' }}>Why this exists</h2>
-                <p style={{ fontSize: 13, color: 'rgba(108,108,118,0.6)', marginBottom: 28 }}>A personal project born out of obsession.</p>
+                <h2 style={{ fontSize: 22, fontWeight: 700, color: 'rgb(11,11,13)', marginBottom: 6, letterSpacing: '-0.02em' }}>{labels.whyDialogTitle}</h2>
+                <p style={{ fontSize: 13, color: 'rgba(108,108,118,0.6)', marginBottom: 28 }}>{labels.whyDialogSubtitle}</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                  {[
-                    'I have been fascinated by Chinese cigarettes for years — the pack artwork, the regional brands, and the history in every design.',
-                    'There was nowhere online to explore this world in a clear, beautiful way. Everything was scattered and hard to browse.',
-                    'So this archive turns that world into something you can actually move through, compare, and revisit.',
-                    'If you are a collector, a traveller, or just curious, this is for you.',
-                  ].map((paragraph, index) => (
+                  {labels.whyDialogParagraphs.map((paragraph, index) => (
                     <p
-                      key={paragraph}
+                      key={`${paragraph.content}-${index}`}
                       style={{
                         fontSize: 14,
-                        color: index === 3 ? 'rgb(11,11,13)' : 'rgba(11,11,13,0.65)',
+                        color: index === labels.whyDialogParagraphs.length - 1 ? 'rgb(11,11,13)' : 'rgba(11,11,13,0.65)',
                         lineHeight: 1.65,
-                        fontWeight: index === 3 ? 500 : 400,
+                        fontWeight: index === labels.whyDialogParagraphs.length - 1 ? 500 : 400,
                       }}
                     >
-                      {paragraph}
+                      {paragraph.content}
                     </p>
                   ))}
                 </div>

@@ -512,8 +512,42 @@ export interface SiteSetting {
   id: number;
   siteTitle: string;
   siteDescription?: string | null;
-  homeHeadline?: string | null;
-  homeSubheadline?: string | null;
+  siteName?: string | null;
+  logoMark?: string | null;
+  logoImageUrl?: string | null;
+  homeHeroTitle: string;
+  homeHeroSubtitle?: string | null;
+  browseCollectionLabel?: string | null;
+  navCollectionLabel?: string | null;
+  navBrandsLabel?: string | null;
+  navCommunityLabel?: string | null;
+  navFeedLabel?: string | null;
+  navAdminLabel?: string | null;
+  collectionSearchPlaceholder?: string | null;
+  collectionAllLabel?: string | null;
+  collectionFormatLabel?: string | null;
+  collectionPriceLabel?: string | null;
+  collectionNewestLabel?: string | null;
+  homeHowButtonLabel?: string | null;
+  homeWhyButtonLabel?: string | null;
+  homeHowDialogTitle?: string | null;
+  homeHowDialogSubtitle?: string | null;
+  homeHowDialogItems?:
+    | {
+        glyph: string;
+        title: string;
+        body: string;
+        id?: string | null;
+      }[]
+    | null;
+  homeWhyDialogTitle?: string | null;
+  homeWhyDialogSubtitle?: string | null;
+  homeWhyDialogParagraphs?:
+    | {
+        content: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -524,8 +558,42 @@ export interface SiteSetting {
 export interface SiteSettingsSelect<T extends boolean = true> {
   siteTitle?: T;
   siteDescription?: T;
-  homeHeadline?: T;
-  homeSubheadline?: T;
+  siteName?: T;
+  logoMark?: T;
+  logoImageUrl?: T;
+  homeHeroTitle?: T;
+  homeHeroSubtitle?: T;
+  browseCollectionLabel?: T;
+  navCollectionLabel?: T;
+  navBrandsLabel?: T;
+  navCommunityLabel?: T;
+  navFeedLabel?: T;
+  navAdminLabel?: T;
+  collectionSearchPlaceholder?: T;
+  collectionAllLabel?: T;
+  collectionFormatLabel?: T;
+  collectionPriceLabel?: T;
+  collectionNewestLabel?: T;
+  homeHowButtonLabel?: T;
+  homeWhyButtonLabel?: T;
+  homeHowDialogTitle?: T;
+  homeHowDialogSubtitle?: T;
+  homeHowDialogItems?:
+    | T
+    | {
+        glyph?: T;
+        title?: T;
+        body?: T;
+        id?: T;
+      };
+  homeWhyDialogTitle?: T;
+  homeWhyDialogSubtitle?: T;
+  homeWhyDialogParagraphs?:
+    | T
+    | {
+        content?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

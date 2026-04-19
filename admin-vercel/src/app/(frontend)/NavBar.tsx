@@ -3,25 +3,41 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-const navItems = [
-  { href: '/', label: 'Collection' },
-  { href: '/brands', label: 'Brands' },
-  { href: '/community', label: 'Community' },
-  { href: '/feed', label: 'Feed' },
-]
+type NavBarProps = {
+  labels: {
+    admin: string
+    brands: string
+    collection: string
+    community: string
+    feed: string
+  }
+  logoImageUrl: string
+  logoMark: string
+  siteName: string
+}
 
-export function NavBar() {
+export function NavBar({ labels, logoImageUrl, logoMark, siteName }: NavBarProps) {
   const pathname = usePathname()
+  const navItems = [
+    { href: '/', label: labels.collection },
+    { href: '/brands', label: labels.brands },
+    { href: '/community', label: labels.community },
+    { href: '/feed', label: labels.feed },
+  ]
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-ink/95 backdrop-blur-xl border-b border-black/[0.06] shadow-[0_1px_0_rgba(0,0,0,0.04)]">
       <div className="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between h-14">
         <Link className="flex items-center gap-2.5 group shrink-0" href="/">
           <div className="w-7 h-7 rounded-lg bg-ash flex items-center justify-center transition-all group-hover:bg-gold group-hover:scale-105">
-            <span className="font-chinese text-ink text-[13px] font-bold leading-none select-none">烟</span>
+            {logoImageUrl ? (
+              <img alt={siteName} className="w-5 h-5 object-contain" src={logoImageUrl} />
+            ) : (
+              <span className="font-chinese text-ink text-[13px] font-bold leading-none select-none">{logoMark}</span>
+            )}
           </div>
           <span className="text-[14px] font-semibold text-ash tracking-[-0.01em] hidden sm:block" style={{ fontFamily: 'var(--font-dm-sans)' }}>
-            ciggies.app
+            {siteName}
           </span>
         </Link>
 
@@ -42,7 +58,7 @@ export function NavBar() {
           })}
           <div className="w-px h-4 bg-black/8 mx-1 hidden sm:block" />
           <a className="px-4 py-1.5 rounded-full text-[13px] font-medium bg-ash text-ink hover:bg-ash/90 transition-all" href="/admin">
-            Sign In
+            {labels.admin}
           </a>
         </div>
       </div>

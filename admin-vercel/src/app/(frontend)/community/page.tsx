@@ -25,26 +25,26 @@ export default async function CommunityPage() {
     <div className="min-h-screen">
       <div className="max-w-2xl mx-auto px-5 sm:px-8 py-10">
         <div className="mb-8">
-          <h1 className="text-[28px] font-bold text-ash tracking-tight leading-tight">Community</h1>
-          <p className="text-[14px] text-muted/60 mt-1">Collectors with a username, ranked by packs tried.</p>
+          <h1 className="text-[28px] font-bold text-ash tracking-tight leading-tight">社区</h1>
+          <p className="text-[14px] text-muted/60 mt-1">按用户名汇总展示，按试过的商品数量排序。</p>
         </div>
 
         <form action="" className="mb-6">
           <button className="w-full flex items-center justify-center gap-2 py-3 px-6 bg-ash text-ink rounded-full text-[14px] font-semibold hover:bg-ash/90 transition-all shadow-card" type="button">
-            Sign up to appear on the leaderboard
+            登录后即可出现在排行榜
           </button>
         </form>
 
         <div>
           <div className="flex items-center gap-1 mb-6 p-1 bg-ink-2 rounded-full w-fit border border-black/[0.05]">
             <button className="px-4 py-1.5 rounded-full text-[13px] font-medium transition-all duration-150 bg-ash text-ink shadow-sm" type="button">
-              Collectors
+              用户排行
             </button>
             <button className="px-4 py-1.5 rounded-full text-[13px] font-medium transition-all duration-150 text-muted/50 hover:text-ash" type="button">
-              Most tried
+              试过最多
             </button>
             <button className="px-4 py-1.5 rounded-full text-[13px] font-medium transition-all duration-150 text-muted/50 hover:text-ash" type="button">
-              Most favorited
+              收藏最多
             </button>
           </div>
 
@@ -65,15 +65,15 @@ export default async function CommunityPage() {
                 <div className="flex gap-4 shrink-0 text-right">
                   <div>
                     <div className="text-[15px] font-bold text-ash leading-none">{row.brands}</div>
-                    <div className="text-[10px] text-muted/40 mt-0.5">brands</div>
+                    <div className="text-[10px] text-muted/40 mt-0.5">品牌</div>
                   </div>
                   <div>
                     <div className="text-[15px] font-bold text-ash/50 leading-none">{row.tried}</div>
-                    <div className="text-[10px] text-muted/40 mt-0.5">tried</div>
+                    <div className="text-[10px] text-muted/40 mt-0.5">试过</div>
                   </div>
                   <div>
                     <div className="text-[15px] font-bold text-gold leading-none">{row.favorites}</div>
-                    <div className="text-[10px] text-muted/40 mt-0.5">fav</div>
+                    <div className="text-[10px] text-muted/40 mt-0.5">收藏</div>
                   </div>
                 </div>
               </Link>

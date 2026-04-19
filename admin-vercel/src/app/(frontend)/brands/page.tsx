@@ -41,9 +41,9 @@ export default async function BrandsPage() {
     <div className="min-h-screen">
       <div className="border-b border-black/[0.06] bg-ink">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 py-10 sm:py-14">
-          <p className="text-[11px] font-medium tracking-[0.25em] uppercase text-muted/40 mb-3">Archive</p>
-          <h1 className="font-chinese text-4xl sm:text-5xl font-bold text-ash mb-1">卷烟品牌</h1>
-          <p className="text-[18px] text-muted/60">Cigarette Brands</p>
+          <p className="text-[11px] font-medium tracking-[0.25em] uppercase text-muted/40 mb-3">品牌索引</p>
+          <h1 className="font-chinese text-4xl sm:text-5xl font-bold text-ash mb-1">香烟品牌</h1>
+          <p className="text-[18px] text-muted/60">品牌总览</p>
         </div>
       </div>
 
@@ -52,22 +52,22 @@ export default async function BrandsPage() {
           <div className="flex gap-1.5 flex-wrap">
             <button className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium transition-all bg-ink-2 text-muted/60 hover:text-ash border border-black/[0.06]" type="button">
               <span className="font-chinese">大陆</span>
-              <span>Mainland China</span>
+              <span>日本在售</span>
               <span className="text-muted/30">{brands.totalDocs}</span>
             </button>
             <button className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium transition-all bg-ink-2 text-muted/60 hover:text-ash border border-black/[0.06]" type="button">
               <span className="font-chinese">港澳台</span>
-              <span>HK · Macau · Taiwan</span>
+              <span>港澳台</span>
               <span className="text-muted/30">0</span>
             </button>
             <button className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium transition-all bg-ink-2 text-muted/60 hover:text-ash border border-black/[0.06]" type="button">
               <span className="font-chinese">国外</span>
-              <span>International</span>
+              <span>国际</span>
               <span className="text-muted/30">0</span>
             </button>
             <button className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium transition-all bg-ink-2 text-muted/60 hover:text-ash border border-black/[0.06]" type="button">
               <span className="font-chinese">历史</span>
-              <span>Historical</span>
+              <span>历史</span>
               <span className="text-muted/30">0</span>
             </button>
           </div>
@@ -79,7 +79,7 @@ export default async function BrandsPage() {
             </svg>
             <input
               className="w-full pl-8 pr-8 py-1.5 bg-ink-2 border border-black/[0.07] rounded-full text-[13px] text-ash placeholder:text-muted/30 focus:outline-none focus:border-black/15 transition-colors"
-              placeholder="Search brands…"
+              placeholder="搜索品牌…"
               readOnly
               type="text"
               value=""
@@ -92,7 +92,7 @@ export default async function BrandsPage() {
         <section id="mainland">
           <div className="flex items-center gap-2.5 mb-6">
             <span className="stamp text-gold border-gold/30 bg-gold/10">大陆</span>
-            <h2 className="text-[15px] font-semibold text-ash">Mainland China</h2>
+            <h2 className="text-[15px] font-semibold text-ash">日本在售品牌</h2>
             <span className="text-[12px] text-muted/40">{brands.totalDocs}</span>
           </div>
 

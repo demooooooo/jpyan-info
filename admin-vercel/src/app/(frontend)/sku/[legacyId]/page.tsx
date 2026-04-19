@@ -83,7 +83,7 @@ export default async function ProductDetailPage({ params }: Props) {
       <div className="border-b border-black/[0.06]">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 py-3 flex items-center gap-2 text-[11px] font-medium text-muted/50">
           <Link className="hover:text-ash transition-colors" href="/">
-            Collection
+            商品库
           </Link>
           <span className="text-muted/20">›</span>
           {brand ? (
@@ -92,6 +92,7 @@ export default async function ProductDetailPage({ params }: Props) {
             </Link>
           ) : (
             <span className="hover:text-ash transition-colors">Brand</span>
+            
           )}
           <span className="text-muted/20">›</span>
           <span className="text-ash/60 truncate max-w-[200px]">{product.name}</span>
@@ -133,7 +134,7 @@ export default async function ProductDetailPage({ params }: Props) {
             </div>
 
             <div className="p-5 rounded-2xl bg-ink-2 border border-black/[0.05]">
-              <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-muted/40 mb-3">Description</p>
+              <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-muted/40 mb-3">商品说明</p>
               {english ? <p className="text-[13px] text-ash/80 leading-relaxed mb-3">{english}</p> : null}
               {chinese ? <p className="font-chinese text-[12px] text-muted/40 leading-loose">{chinese}</p> : null}
             </div>
@@ -141,7 +142,7 @@ export default async function ProductDetailPage({ params }: Props) {
 
           <div className="space-y-8">
             <div>
-              <span className="stamp text-gold border-gold/30 bg-gold/10 mb-3 inline-flex">大陆 · Mainland China</span>
+              <span className="stamp text-gold border-gold/30 bg-gold/10 mb-3 inline-flex">日本 · Japan</span>
               <h1 className="font-chinese text-3xl sm:text-4xl font-bold text-ash leading-tight mb-1">{product.name}</h1>
               {product.englishName ? <p className="text-[17px] text-muted/60 italic mb-2">{product.englishName}</p> : null}
               {brand ? (
@@ -151,25 +152,25 @@ export default async function ProductDetailPage({ params }: Props) {
               ) : null}
               <div className="mt-5 flex items-baseline gap-3">
                 <span className="text-[32px] font-bold text-ash leading-none">{typeof boxPrice === 'number' ? `¥${boxPrice}` : '--'}</span>
-                <span className="text-[13px] text-muted/40">/ pack</span>
+                <span className="text-[13px] text-muted/40">/ 包</span>
                 {typeof boxPrice === 'number' ? <span className="text-[14px] text-muted/40 font-medium">≈ ${Math.max(1, Math.round(boxPrice / 7))}</span> : null}
               </div>
 
               <div className="mt-5">
                 <div className="flex gap-2">
-                  <button className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-[13px] font-medium transition-all bg-ink-2 text-ash/60 hover:bg-ink-3 hover:text-ash" title="Sign in to favorite products" type="button">
+                  <button className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-[13px] font-medium transition-all bg-ink-2 text-ash/60 hover:bg-ink-3 hover:text-ash" title="收藏商品" type="button">
                     <span className="text-base leading-none">☆</span>
-                    Favorite
+                    收藏
                   </button>
-                  <button className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-[13px] font-medium transition-all bg-ink-2 text-ash/60 hover:bg-ink-3 hover:text-ash" title="Sign in to track" type="button">
+                  <button className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-[13px] font-medium transition-all bg-ink-2 text-ash/60 hover:bg-ink-3 hover:text-ash" title="标记试过" type="button">
                     <span className="text-base leading-none">○</span>
-                    Mark tried
+                    标记试过
                   </button>
-                  <button className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-[13px] font-medium transition-all bg-ink-2 text-ash/60 hover:bg-ink-3 hover:text-ash" title="Sign in to save to wishlist" type="button">
+                  <button className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-[13px] font-medium transition-all bg-ink-2 text-ash/60 hover:bg-ink-3 hover:text-ash" title="加入想买清单" type="button">
                     <svg className="shrink-0" fill="none" height="14" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75" viewBox="0 0 24 24" width="14">
                       <path d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
                     </svg>
-                    Wishlist
+                    想买清单
                   </button>
                 </div>
               </div>
@@ -177,7 +178,7 @@ export default async function ProductDetailPage({ params }: Props) {
 
             <div className="rounded-2xl border border-black/[0.06] overflow-hidden">
               <div className="px-4 py-3 bg-ink-2 border-b border-black/[0.05]">
-                <p className="text-[11px] font-semibold tracking-[0.1em] uppercase text-muted/50">Specifications</p>
+                <p className="text-[11px] font-semibold tracking-[0.1em] uppercase text-muted/50">规格参数</p>
               </div>
               <div className="divide-y divide-black/[0.04]">
                 {(product.specifications || []).map((item, index) => (
@@ -191,21 +192,21 @@ export default async function ProductDetailPage({ params }: Props) {
 
             <div className="rounded-2xl border border-black/[0.06] overflow-hidden">
               <div className="px-4 py-3 bg-ink-2 border-b border-black/[0.05]">
-                <p className="text-[11px] font-semibold tracking-[0.1em] uppercase text-muted/50">Pricing</p>
+                <p className="text-[11px] font-semibold tracking-[0.1em] uppercase text-muted/50">价格信息</p>
               </div>
               <div className="divide-y divide-black/[0.04]">
                 <div className="flex items-center px-4 py-2.5">
-                  <span className="text-[12px] text-muted/60 w-36 shrink-0">Pack price</span>
+                  <span className="text-[12px] text-muted/60 w-36 shrink-0">单包价格</span>
                   <span className="text-[14px] font-bold text-gold">{typeof boxPrice === 'number' ? `¥${boxPrice}` : '--'}</span>
                   {typeof boxPrice === 'number' ? <span className="text-[12px] text-muted/40 ml-2">≈ ${(boxPrice / 6.84).toFixed(2)}</span> : null}
                 </div>
                 <div className="flex items-center px-4 py-2.5">
-                  <span className="text-[12px] text-muted/60 w-36 shrink-0">Carton price</span>
+                  <span className="text-[12px] text-muted/60 w-36 shrink-0">条装价格</span>
                   <span className="text-[14px] font-bold text-gold">{typeof cartonPrice === 'number' ? `¥${cartonPrice}` : '--'}</span>
                   {typeof cartonPrice === 'number' ? <span className="text-[12px] text-muted/40 ml-2">≈ ${(cartonPrice / 6.84).toFixed(2)}</span> : null}
                 </div>
                 <div className="flex items-center px-4 py-2.5">
-                  <span className="text-[12px] text-muted/60 w-36 shrink-0">Wholesale</span>
+                  <span className="text-[12px] text-muted/60 w-36 shrink-0">参考批发</span>
                   <span className="text-[14px] font-bold text-gold">{typeof wholesalePrice === 'number' ? `¥${wholesalePrice}` : '--'}</span>
                   {typeof wholesalePrice === 'number' ? <span className="text-[12px] text-muted/40 ml-2">≈ ${(wholesalePrice / 6.84).toFixed(2)}</span> : null}
                 </div>
@@ -213,24 +214,24 @@ export default async function ProductDetailPage({ params }: Props) {
             </div>
 
             <div className="space-y-2">
-              <p className="text-[11px] font-semibold tracking-[0.1em] uppercase text-muted/40 px-0.5">Barcodes</p>
+              <p className="text-[11px] font-semibold tracking-[0.1em] uppercase text-muted/40 px-0.5">条码信息</p>
               <div className="flex items-center gap-3 px-4 py-2.5 bg-ink-2 rounded-xl">
-                <span className="text-[11px] text-muted/50 w-28 shrink-0">Box barcode</span>
+                <span className="text-[11px] text-muted/50 w-28 shrink-0">单包条码</span>
                 <span className="text-[12px] text-ash/60 font-mono tracking-wider">{product.inventory?.barcode || '--'}</span>
               </div>
               <div className="flex items-center gap-3 px-4 py-2.5 bg-ink-2 rounded-xl">
-                <span className="text-[11px] text-muted/50 w-28 shrink-0">Carton barcode</span>
+                <span className="text-[11px] text-muted/50 w-28 shrink-0">条装条码</span>
                 <span className="text-[12px] text-ash/60 font-mono tracking-wider">{product.inventory?.skuCode || '--'}</span>
               </div>
             </div>
 
             <div className="rounded-2xl border border-black/[0.06] overflow-hidden">
               <div className="px-4 py-3 bg-ink-2 border-b border-black/[0.05] flex items-center justify-between">
-                <p className="text-[11px] font-semibold tracking-[0.1em] uppercase text-muted/50">Ratings</p>
-                <span className="text-[11px] text-muted/35">{stats.commentsCount || 0} votes</span>
+                <p className="text-[11px] font-semibold tracking-[0.1em] uppercase text-muted/50">评分</p>
+                <span className="text-[11px] text-muted/35">{stats.commentsCount || 0} 次评分</span>
               </div>
               <div className="p-4 space-y-4">
-                {['Taste', 'Pack', 'Value', 'Overall'].map((label) => (
+                {['口感', '包装', '性价比', '综合'].map((label) => (
                   <div key={label}>
                     <div className="flex justify-between mb-2">
                       <span className="text-[12px] text-ash/60 font-medium">{label}</span>

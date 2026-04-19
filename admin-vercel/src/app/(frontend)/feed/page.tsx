@@ -11,9 +11,9 @@ const timeAgo = (value?: string | null) => {
   const diff = Date.now() - new Date(value).getTime()
   const hours = Math.max(1, Math.floor(diff / (1000 * 60 * 60)))
 
-  if (hours < 24) return `${hours}h ago`
+  if (hours < 24) return `${hours} 小时前`
   const days = Math.floor(hours / 24)
-  return `${days}d ago`
+  return `${days} 天前`
 }
 
 export default async function FeedPage() {
@@ -34,8 +34,8 @@ export default async function FeedPage() {
     <div className="min-h-screen">
       <div className="max-w-2xl mx-auto px-5 sm:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-[26px] font-bold text-ash tracking-tight">Community Feed</h1>
-          <p className="text-[13px] text-muted/50 mt-1">Recent activity from the community</p>
+          <h1 className="text-[26px] font-bold text-ash tracking-tight">社区动态</h1>
+          <p className="text-[13px] text-muted/50 mt-1">最近的社区互动记录</p>
         </div>
 
         <div className="space-y-2">
@@ -43,7 +43,7 @@ export default async function FeedPage() {
             const product = typeof entry.product === 'object' ? entry.product : null
             const productImage = toTemplateImageUrl(product?.primaryImageUrl || product?.gallery?.[0]?.imageUrl, 'products')
             const authorPath = `/u/${slugifyName(entry.authorName || 'anonymous')}`
-            const action = entry.type === 'feed' ? 'favorited' : entry.type === 'review' ? 'reviewed' : 'tried'
+            const action = entry.type === 'feed' ? '收藏了' : entry.type === 'review' ? '点评了' : '试过了'
 
             return (
               <div className="flex items-center gap-3 p-3 rounded-2xl bg-ink-2 border border-black/[0.05] hover:border-black/10 transition-colors" key={entry.id}>

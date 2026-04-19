@@ -4,18 +4,23 @@ import './ciggies.css'
 import './styles.css'
 
 import { NavBar } from './NavBar'
+import { getSiteSettings } from '@/lib/site-settings'
 
-export const metadata = {
-  description:
-    'The only comprehensive English-language archive of Chinese cigarettes — browse brands, specs, pricing, imagery, and community activity.',
-  title: '中国卷烟博物馆 · Chinese Cigarette Museum',
+export async function generateMetadata() {
+  const settings = await getSiteSettings()
+
+  return {
+    description: settings.siteDescription,
+    title: settings.siteTitle,
+  }
 }
 
-export default function RootLayout(props: { children: React.ReactNode }) {
+export default async function RootLayout(props: { children: React.ReactNode }) {
   const { children } = props
+  const settings = await getSiteSettings()
 
   return (
-    <html className="__variable_1ceda5" lang="en">
+    <html className="__variable_1ceda5" lang="zh-CN">
       <head>
         <link href="https://fonts.googleapis.com" rel="preconnect" />
         <link crossOrigin="" href="https://fonts.gstatic.com" rel="preconnect" />
@@ -24,7 +29,18 @@ export default function RootLayout(props: { children: React.ReactNode }) {
       </head>
       <body className="min-h-screen bg-ink antialiased" style={{ fontFamily: 'var(--font-dm-sans), system-ui, sans-serif' }}>
         <div hidden />
-        <NavBar />
+        <NavBar
+          labels={{
+            admin: settings.navAdminLabel,
+            brands: settings.navBrandsLabel,
+            collection: settings.navCollectionLabel,
+            community: settings.navCommunityLabel,
+            feed: settings.navFeedLabel,
+          }}
+          logoImageUrl={settings.logoImageUrl}
+          logoMark={settings.logoMark}
+          siteName={settings.siteName}
+        />
         <div className="layout-main pt-[56px] pb-16 sm:pb-0">{children}</div>
       </body>
     </html>
