@@ -66,6 +66,14 @@ export const Products: CollectionConfig = {
       name: 'primaryImageUrl',
       label: '主图地址',
       type: 'text',
+      admin: {
+        components: {
+          Field: '@/fields/imageUpload/ImageUploadField#ImageUploadField',
+        },
+        custom: {
+          uploadCategory: 'products',
+        },
+      },
     },
     {
       name: 'gallery',
@@ -77,6 +85,14 @@ export const Products: CollectionConfig = {
           label: '图片地址',
           type: 'text',
           required: true,
+          admin: {
+            components: {
+              Field: '@/fields/imageUpload/ImageUploadField#ImageUploadField',
+            },
+            custom: {
+              uploadCategory: 'products',
+            },
+          },
         },
       ],
     },

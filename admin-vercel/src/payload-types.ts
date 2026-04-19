@@ -163,6 +163,11 @@ export interface Media {
   alt: string;
   sourceUrl?: string | null;
   fileUrl: string;
+  filename?: string | null;
+  category?: ('brands' | 'products' | 'avatars') | null;
+  mimeType?: string | null;
+  byteSize?: number | null;
+  fileDataBase64?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -394,6 +399,11 @@ export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   sourceUrl?: T;
   fileUrl?: T;
+  filename?: T;
+  category?: T;
+  mimeType?: T;
+  byteSize?: T;
+  fileDataBase64?: T;
   updatedAt?: T;
   createdAt?: T;
 }

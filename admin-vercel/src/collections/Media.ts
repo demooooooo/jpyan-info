@@ -31,5 +31,47 @@ export const Media: CollectionConfig = {
       type: 'text',
       required: true,
     },
+    {
+      name: 'filename',
+      label: '文件名',
+      type: 'text',
+      admin: {
+        readOnly: true,
+      },
+    },
+    {
+      name: 'category',
+      label: '图片分类',
+      type: 'select',
+      options: [
+        { label: '品牌', value: 'brands' },
+        { label: '商品', value: 'products' },
+        { label: '头像', value: 'avatars' },
+      ],
+    },
+    {
+      name: 'mimeType',
+      label: '文件类型',
+      type: 'text',
+      admin: {
+        readOnly: true,
+      },
+    },
+    {
+      name: 'byteSize',
+      label: '文件大小',
+      type: 'number',
+      admin: {
+        readOnly: true,
+      },
+    },
+    {
+      name: 'fileDataBase64',
+      label: '文件内容',
+      type: 'textarea',
+      admin: {
+        hidden: true,
+      },
+    },
   ],
 }

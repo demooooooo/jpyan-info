@@ -44,6 +44,14 @@ export const Brands: CollectionConfig = {
       name: 'logoUrl',
       label: '品牌图片',
       type: 'text',
+      admin: {
+        components: {
+          Field: '@/fields/imageUpload/ImageUploadField#ImageUploadField',
+        },
+        custom: {
+          uploadCategory: 'brands',
+        },
+      },
     },
     {
       name: 'description',
