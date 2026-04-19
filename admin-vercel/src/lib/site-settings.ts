@@ -55,7 +55,7 @@ const DEFAULT_SITE_SETTINGS: SiteSettingsView = {
   navBrandsLabel: '品牌',
   navCommunityLabel: '社区',
   navFeedLabel: '动态',
-  navAdminLabel: '后台登录',
+  navAdminLabel: '登录',
   collectionSearchPlaceholder: '搜索商品…',
   collectionAllLabel: '全部',
   collectionFormatLabel: '规格',
