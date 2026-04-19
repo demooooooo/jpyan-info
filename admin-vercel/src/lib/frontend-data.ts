@@ -56,10 +56,6 @@ export const toMoney = (value: unknown) => {
 
   if (parsed == null) return null
 
-  if (parsed >= 1000) {
-    parsed = parsed / 100
-  }
-
   return Number.isInteger(parsed) ? parsed : Number(parsed.toFixed(2))
 }
 

@@ -69,15 +69,7 @@ export default async function HomePage() {
         productCount={products.totalDocs}
       />
       <CollectionBrowser
-        brands={brands.docs.map((brand) => ({
-          id: brand.id,
-          name: brand.name,
-        }))}
         labels={{
-          all: siteSettings.collectionAllLabel,
-          format: siteSettings.collectionFormatLabel,
-          newest: siteSettings.collectionNewestLabel,
-          price: siteSettings.collectionPriceLabel,
           searchPlaceholder: siteSettings.collectionSearchPlaceholder,
         }}
         products={products.docs}

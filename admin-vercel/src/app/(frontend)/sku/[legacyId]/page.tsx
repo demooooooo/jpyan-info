@@ -174,7 +174,7 @@ export default async function ProductDetailPage({ params }: Props) {
                     '@type': 'Offer',
                     availability: 'https://schema.org/InStock',
                     price: boxPrice,
-                    priceCurrency: 'CNY',
+                    priceCurrency: 'JPY',
                   }
                 : undefined,
           }),
@@ -223,9 +223,8 @@ export default async function ProductDetailPage({ params }: Props) {
                 </Link>
               ) : null}
               <div className="mt-5 flex items-baseline gap-3">
-                <span className="text-[32px] font-bold text-ash leading-none">{typeof boxPrice === 'number' ? `¥${boxPrice}` : '--'}</span>
+                <span className="text-[32px] font-bold text-ash leading-none">{typeof boxPrice === 'number' ? `JPY ${boxPrice}` : '--'}</span>
                 <span className="text-[13px] text-muted/40">/ 包</span>
-                {typeof boxPrice === 'number' ? <span className="text-[14px] text-muted/40 font-medium">≈ ${Math.max(1, Math.round(boxPrice / 7))}</span> : null}
               </div>
 
               <div className="mt-5">
@@ -275,18 +274,15 @@ export default async function ProductDetailPage({ params }: Props) {
               <div className="divide-y divide-black/[0.04]">
                 <div className="flex items-center px-4 py-2.5">
                   <span className="text-[12px] text-muted/60 w-36 shrink-0">单包价格</span>
-                  <span className="text-[14px] font-bold text-gold">{typeof boxPrice === 'number' ? `¥${boxPrice}` : '--'}</span>
-                  {typeof boxPrice === 'number' ? <span className="text-[12px] text-muted/40 ml-2">≈ ${(boxPrice / 6.84).toFixed(2)}</span> : null}
+                  <span className="text-[14px] font-bold text-gold">{typeof boxPrice === 'number' ? `JPY ${boxPrice}` : '--'}</span>
                 </div>
                 <div className="flex items-center px-4 py-2.5">
                   <span className="text-[12px] text-muted/60 w-36 shrink-0">条装价格</span>
-                  <span className="text-[14px] font-bold text-gold">{typeof cartonPrice === 'number' ? `¥${cartonPrice}` : '--'}</span>
-                  {typeof cartonPrice === 'number' ? <span className="text-[12px] text-muted/40 ml-2">≈ ${(cartonPrice / 6.84).toFixed(2)}</span> : null}
+                  <span className="text-[14px] font-bold text-gold">{typeof cartonPrice === 'number' ? `JPY ${cartonPrice}` : '--'}</span>
                 </div>
                 <div className="flex items-center px-4 py-2.5">
                   <span className="text-[12px] text-muted/60 w-36 shrink-0">参考批发</span>
-                  <span className="text-[14px] font-bold text-gold">{typeof wholesalePrice === 'number' ? `¥${wholesalePrice}` : '--'}</span>
-                  {typeof wholesalePrice === 'number' ? <span className="text-[12px] text-muted/40 ml-2">≈ ${(wholesalePrice / 6.84).toFixed(2)}</span> : null}
+                  <span className="text-[14px] font-bold text-gold">{typeof wholesalePrice === 'number' ? `JPY ${wholesalePrice}` : '--'}</span>
                 </div>
               </div>
             </div>
