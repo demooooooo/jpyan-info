@@ -119,7 +119,7 @@ export function CollectionBrowser({ brands, labels, products }: CollectionBrowse
   const [openMenu, setOpenMenu] = useState<null | 'brand' | 'format' | 'price' | 'sort'>(null)
   const menuRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
-  const pendingScrollTopRef = useRef<number | null>(null)
+  const pendingInputTopRef = useRef<number | null>(null)
 
   useEffect(() => {
     const onPointerDown = (event: MouseEvent) => {
@@ -169,21 +169,27 @@ export function CollectionBrowser({ brands, labels, products }: CollectionBrowse
   }, [brandFilter, formatFilter, priceFilter, products, query, sortKey])
 
   useLayoutEffect(() => {
-    const pendingTop = pendingScrollTopRef.current
-    if (pendingTop == null) return
+    const expectedTop = pendingInputTopRef.current
+    if (expectedTop == null) return
     if (document.activeElement !== inputRef.current) {
-      pendingScrollTopRef.current = null
+      pendingInputTopRef.current = null
       return
     }
 
-    window.scrollTo({
-      top: pendingTop,
-      left: window.scrollX,
-      behavior: 'auto',
-    })
+    const currentTop = inputRef.current?.getBoundingClientRect().top
+    if (typeof currentTop === 'number') {
+      const offset = currentTop - expectedTop
+      if (Math.abs(offset) > 1) {
+        window.scrollBy({
+          top: offset,
+          left: 0,
+          behavior: 'auto',
+        })
+      }
+    }
 
     const reset = window.requestAnimationFrame(() => {
-      pendingScrollTopRef.current = null
+      pendingInputTopRef.current = null
     })
 
     return () => window.cancelAnimationFrame(reset)
@@ -230,7 +236,7 @@ export function CollectionBrowser({ brands, labels, products }: CollectionBrowse
                   className="w-full bg-ink-2 rounded-full pl-9 pr-3 py-[6px] text-ash placeholder:text-muted/40 focus:outline-none focus:bg-ink-3 transition-colors border border-black/[0.07] focus:border-black/[0.12]"
                   name="q"
                   onChange={(event) => {
-                    pendingScrollTopRef.current = window.scrollY
+                    pendingInputTopRef.current = inputRef.current?.getBoundingClientRect().top ?? null
                     setDraftQuery(event.target.value)
                   }}
                   placeholder={labels.searchPlaceholder}
